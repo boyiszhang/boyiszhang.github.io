@@ -1,109 +1,726 @@
 <!DOCTYPE html>
 <html>
-
 	<head>
-	  <meta charset="utf-8">
-	  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
-	  <title>ArcGIS Developer Guide: Display a map (2D)</title>
-	  <style>
-		html,
-		body,
-		#viewDiv {
-		  padding: 0;
-		  margin: 0;
-		  height: 100%;
-		  width: 100%;
-		}
-	  </style>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="description" content="ArcGIS JS v4, Calcite Maps and Bootstrap Example">
 
-	  <link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/themes/light/main.css">
-	  <script src="https://js.arcgis.com/4.18/"></script>
+		<title>ArcGIS JS v4, Calcite Maps and Bootstrap Example</title>
 
-	  <script>
-		require([
-		 "esri/config",
-		  "esri/Map",
-		  "esri/views/MapView",
-			"esri/widgets/Locate",
-			"esri/widgets/Track",
-			"esri/Graphic",
-			"esri/layers/GraphicsLayer",
-			"esri/geometry/Circle"
-		], function (esriConfig,Map,MapView,Locate,Track,Graphic,GraphicsLayer,Circle) {
+		<link rel="stylesheet" href="https://esri.github.io/calcite-maps/dist/css/calcite-maps-bootstrap.min-v0.10.css">
 
-		  esriConfig.apiKey = "AAPKf1a1ba6840e94c59a8ad6869a5b2f3e3EoXk-AfWFv1Fq5GtGkVdguSoGnaTE8fxDoq8H5yXmPE6FudesI3EbDtZNbJifPDd";
-		  
-			const map = new Map({
-				basemap: "arcgis-navigation" // Basemap layer
-			});
+		<link rel="stylesheet" href="https://esri.github.io/calcite-maps/dist/css/calcite-maps-arcgis-4.x.min-v0.10.css">
 
-// 			let cirSymbol = {
-// 				type: "simple-fill",
-// 				color: [51,51,204,0.9]
-// 			}
-// 			
-// 			const graphicsLayer = new GraphicsLayer();
-// 			map.add(graphicsLayer);
-// 
-// 			const cir = new Circle ({
-// 				center: [-118.805, 34.027],
-// 				radius: 1000,
-// 				radiusUnit: "kilometers"
-// 			});
-// 			
-// 			const pointGraphic = new Graphic({
-// 					geometry: cir,
-// 					symbol: cirSymbol
-// 			});
-// 			graphicsLayer.add(pointGraphic);
+		<link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/css/main.css">
 
-			const view = new MapView({
-				map: map,
-				center: [-40, 28],
-				zoom: 2, 
-				container: "viewDiv"
-			});
-			
-			const locate = new Locate({
-					view: view,
-					useHeadingEnabled: false,
-					goToOverride: function(view, options) {
-						options.target.scale = 1500;
-						return view.goTo(options.target);
-					}
-				});
-			view.ui.add(locate, "top-left");
+		<script type="text/javascript">
+			var dojoConfig = {
+				packages: [{
+					name: "bootstrap",
+					location: "https://esri.github.io/calcite-maps/dist/vendor/dojo-bootstrap"
+				},
+				{
+					name: "calcite-maps",
+					location: "https://esri.github.io/calcite-maps/dist/js/dojo"
+				}]
+			};
+		</script>
 
-			const track = new Track({
-					view: view,
-					graphic: new Graphic({
-						symbol: {
-							type: "simple-marker",
-							size: "12px",
-							color: "green",
-							outline: {
-								color: "#efefef",
-								width: "1.5px"
-							}
-						}
-					}),
-					useHeadingEnabled: false
-				});
-			view.ui.add(track, "top-left");
+		<script src="https://js.arcgis.com/4.18/"></script>
 
-// 			let cirGraphic = new Graphic({
-// 				geometry: cir,
-// 				symbol: cirSymbol
-// 			});
-// 
-// 			view.graphics.add(cirGraphic);
-		});
-		
-	  </script>
+		<style>
+			html,
+			body {
+				margin: 0;
+				padding: 0;
+				height: 100%;
+				width: 100%;
+			}
+		</style>
+
 	</head>
 
-	<body>
-	  <div id="viewDiv"></div>
-	</body>
+	<body class="calcite-maps calcite-nav-top">
 
+		<nav class="navbar calcite-navbar navbar-fixed-top calcite-text-light calcite-bg-dark">
+			<div class="dropdown calcite-dropdown calcite-text-dark calcite-bg-light" role="presentation">
+				<a class="dropdown-toggle" role="menubutton" aria-haspopup="true" aria-expanded="false" tabindex="0">
+					<div class="calcite-dropdown-toggle">
+						<span class="sr-only">Toggle dropdown menu</span>
+						<span></span>
+						<span></span>
+						<span></span>
+						<span></span>
+					</div>
+				</a>
+				<ul class="dropdown-menu" role="menu">
+					<li><a role="menuitem" tabindex="0" data-target="#panelChart01" aria-haspopup="true"><span class="glyphicon glyphicon-usd"></span> 可支配收入</a></li>
+					<li><a role="menuitem" tabindex="0" data-target="#panelChart02" aria-haspopup="true"><span class="glyphicon glyphicon-globe"></span> 专利授权</a></li>
+					<li><a role="menuitem" tabindex="0" data-target="#panelChart03" aria-haspopup="true"><span class="glyphicon glyphicon-user"></span> 在校人数</a></li>
+					<li><a role="menuitem" tabindex="0" data-target="#panelChart04" aria-haspopup="true"><span class="glyphicon glyphicon-home"></span> 厅馆数量</a></li>
+					<li><a role="menuitem" tabindex="0" data-target="#panelChart05" aria-haspopup="true"><span class="glyphicon glyphicon-plus"></span> 医护占比</a></li>
+					<li><a role="menuitem" tabindex="0" id="calciteToggleNavbar" aria-haspopup="true"><span class="glyphicon glyphicon-fullscreen"></span> Full Map</a></li>
+				</ul>
+			</div>
+
+			<div class="calcite-title calcite-overflow-hidden">
+				<span class="calcite-title-main">Calcite Maps</span>
+				<span class="calcite-title-divider hidden-xs"></span>
+				<span class="calcite-title-sub hidden-xs">A Bootstrap theme for building modern map apps</span>
+			</div>
+			
+			<ul class="nav navbar-nav calcite-nav">
+				<li>
+					<div class="calcite-navbar-search calcite-search-expander">
+						<div id="searchWidgetDiv"></div>
+					</div>
+				</li>
+			</ul>
+		</nav>>
+
+		<div class="calcite-map calcite-map-absolute">
+			<div id="mapViewDiv"></div>
+		</div>
+
+		<div class="calcite-panels calcite-panels-right calcite-text-light calcite-bg-dark panel-group">
+
+			<div id="panelChart01" class="panel collapse in">
+				<div id="headingChart01" class="panel-heading" role="tab">
+					<div class="panel-title">
+						<a class="panel-toggle" role="button" data-toggle="collapse" href="#collapseChart01"  aria-expanded="true" aria-controls="collapseChart01"><span class="glyphicon glyphicon-usd" aria-hidden="true"></span><span class="panel-label">可支配收入</span></a> 
+						<a class="panel-close" role="button" data-toggle="collapse" tabindex="0" href="#panelChart01"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a>  
+					</div>
+				</div>
+				<div id="collapseChart01" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingChart01">
+					<div class="panel-body">
+						<div id="Chart01Div"></div>
+					</div>
+				</div>
+			</div>
+			
+			<div id="panelChart02" class="panel collapse">
+				<div id="headingChart02" class="panel-heading" role="tab">
+					<div class="panel-title">
+						<a class="panel-toggle" role="button" data-toggle="collapse" href="#collapseChart02"  aria-expanded="true" aria-controls="collapseChart02"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span><span class="panel-label">专利授权</span></a> 
+						<a class="panel-close" role="button" data-toggle="collapse" tabindex="0" href="#panelChart02"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a>  
+					</div>
+				</div>
+				<div id="collapseChart02" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingChart02">
+					<div class="panel-body">
+						<div id="Chart02Div"></div>
+					</div>
+				</div>
+			</div>
+			
+			<div id="panelChart03" class="panel collapse">
+				<div id="headingChart03" class="panel-heading" role="tab">
+					<div class="panel-title">
+						<a class="panel-toggle" role="button" data-toggle="collapse" href="#collapseChart03"  aria-expanded="true" aria-controls="collapseChart03"><span class="glyphicon glyphicon-user" aria-hidden="true"></span><span class="panel-label">在校人数</span></a> 
+						<a class="panel-close" role="button" data-toggle="collapse" tabindex="0" href="#panelChart03"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a>  
+					</div>
+				</div>
+				<div id="collapseChart03" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingChart03">
+					<div class="panel-body">
+						<div id="Chart03Div"></div>
+					</div>
+				</div>
+			</div>
+			
+			<div id="panelChart04" class="panel collapse">
+				<div id="headingChart04" class="panel-heading" role="tab">
+					<div class="panel-title">
+						<a class="panel-toggle" role="button" data-toggle="collapse" href="#collapseChart04"  aria-expanded="true" aria-controls="collapseChart04"><span class="glyphicon glyphicon-home" aria-hidden="true"></span><span class="panel-label">厅馆数量</span></a> 
+						<a class="panel-close" role="button" data-toggle="collapse" tabindex="0" href="#panelChart04"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a>  
+					</div>
+				</div>
+				<div id="collapseChart04" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingChart04">
+					<div class="panel-body">
+						<div id="Chart04Div"></div>
+					</div>
+				</div>
+			</div>
+			
+			<div id="panelChart05" class="panel collapse">
+				<div id="headingChart05" class="panel-heading" role="tab">
+					<div class="panel-title">
+						<a class="panel-toggle" role="button" data-toggle="collapse" href="#collapseChart05"  aria-expanded="true" aria-controls="collapseChart05"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span class="panel-label">医护占比</span></a> 
+						<a class="panel-close" role="button" data-toggle="collapse" tabindex="0" href="#panelChart05"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a>  
+					</div>
+				</div>
+				<div id="collapseChart05" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingChart05">
+					<div class="panel-body">
+						<div id="Chart05Div"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		require([
+			// ArcGIS
+			"esri/Map",
+			"esri/Basemap",
+			"esri/views/MapView",
+
+			// Widgets
+			"esri/widgets/Home",
+			"esri/widgets/Zoom",
+			"esri/widgets/Compass",
+			"esri/widgets/Search",
+			"esri/widgets/Legend",
+			"esri/widgets/BasemapGallery",
+			"esri/widgets/Expand",
+			"esri/widgets/ScaleBar",
+			"esri/widgets/Attribution",
+
+			"esri/layers/TileLayer",
+			"esri/layers/FeatureLayer",
+
+			"esri/symbols/SimpleFillSymbol",
+
+			"esri/renderers/DotDensityRenderer",
+			
+			"esri/PopupTemplate",
+
+			"esri/widgets/Feature",
+			"esri/widgets/LayerList",
+
+			"esri/tasks/QueryTask",
+			"esri/tasks/support/Query",
+
+			// Bootstrap
+			"bootstrap/Collapse",
+			"bootstrap/Dropdown",
+
+			// Calcite Maps
+			"calcite-maps/calcitemaps-v0.10",
+			// Calcite Maps ArcGIS Support
+			"calcite-maps/calcitemaps-arcgis-support-v0.10",	
+
+			"dojo/domReady!"
+			], function(Map, Basemap, MapView, Home, Zoom, Compass, Search, Legend, BasemapGallery, Expand, ScaleBar,
+			Attribution, TileLayer, FeatureLayer, SimpleFillSymbol, DotDensityRenderer, PopupTemplate, 
+			Feature, LayerList, QueryTask, Query, Collapse, Dropdown, CalciteMaps, CalciteMapArcGISSupport) {
+
+			var map = new Map({
+				basemap: "streets"
+			});
+
+			var L2017 = new FeatureLayer({
+				url: "https://services9.arcgis.com/SKX4Ho42BPrgC7Qi/arcgis/rest/services/2017/FeatureServer"
+			});
+			map.add(L2017);
+
+			var L2018 = new FeatureLayer({
+				url: "https://services9.arcgis.com/SKX4Ho42BPrgC7Qi/arcgis/rest/services/2018/FeatureServer"
+			});
+			map.add(L2018);
+
+			var L2019 = new FeatureLayer({
+				url: "https://services9.arcgis.com/SKX4Ho42BPrgC7Qi/arcgis/rest/services/2019/FeatureServer"
+			});
+			map.add(L2019);
+
+			// View
+			var mapView = new MapView({
+				container: "mapViewDiv",
+				map: map,
+				zoom: 5,
+				center: [108.5,32.0],
+				ui: {components: []}
+			});
+
+			var defaultgraphic = {
+				popupTemplate: {
+					content: "点击对应的省份查看"
+				}
+			};
+			
+			var feature01 = new Feature({
+				container: "Chart01Div",
+				graphic: defaultgraphic,
+				map: mapView.map,
+				spatialReference: mapView.spatialReference
+			});
+			
+			var feature02 = new Feature({
+				container: "Chart02Div",
+				graphic: defaultgraphic,
+				map: mapView.map,
+				spatialReference: mapView.spatialReference
+			});
+			
+			var feature03 = new Feature({
+				container: "Chart03Div",
+				graphic: defaultgraphic,
+				map: mapView.map,
+				spatialReference: mapView.spatialReference
+			});
+
+			var feature04 = new Feature({
+				container: "Chart04Div",
+				graphic: defaultgraphic,
+				map: mapView.map,
+				spatialReference: mapView.spatialReference
+			});
+
+			var feature05 = new Feature({
+				container: "Chart05Div",
+				graphic: defaultgraphic,
+				map: mapView.map,
+				spatialReference: mapView.spatialReference
+			});
+			
+			mapView.whenLayerView(L2017).then(function (layerView) {
+				var highlight;
+				mapView.on("pointer-down", function (event) {
+					mapView.hitTest(event).then(function (event) {
+						var results = event.results.filter(function (result) {
+							return new PopupTemplate();
+						});
+						var result = results[0];
+						highlight && highlight.remove();
+						if (result) {
+							feature01.graphic = result.graphic;
+							feature01.graphic.popupTemplate = new PopupTemplate({
+								title: "<b>{地区}城乡年可支配收入</b>",
+								content: [{
+									type: "media",
+									mediaInfos: [{
+										type: "pie-chart",
+										caption: "橙色为城市，黄色为农乡。单位：元",
+										value: {
+											fields: ["城可支","农可支"]
+											}
+										}]
+									}
+								]
+							});
+							feature02.graphic = result.graphic;
+							feature02.graphic.popupTemplate = new PopupTemplate({
+								title: "<b>{地区}全年专利授权情况</b>",
+								content: [
+									{
+									type: "fields",
+									fieldInfos: [{
+										fieldName: "专授",
+										label: "专利授权总数："
+										}],
+									},
+									{
+									type: "media",
+									mediaInfos: [{
+										type: "pie-chart",
+										caption: "橙色为发明专利，黄色为实用新型专利，外观设计专利。单位：件",
+										value: {
+											fields: ["发明","实用","外观"]
+											}
+										}]
+									}
+								]
+							});
+							feature03.graphic = result.graphic;
+							feature03.graphic.popupTemplate = new PopupTemplate({
+								title: "<b>{地区}各阶段在校人数情况</b>",
+								content: [
+									{
+									type: "media",
+									mediaInfos: [{
+										type: "column-chart",
+										caption: "将鼠标放置到条柱上查看。单位：万人",
+										value: {
+											fields: ["小学","初中","高中","本科","专科","特殊"]
+											}
+										}]
+									}
+								]
+							});
+							feature04.graphic = result.graphic;
+							feature04.graphic.popupTemplate = new PopupTemplate({
+								title: "<b>{地区}文娱活动厅馆数量</b>",
+								content: [
+									{
+									type: "media",
+									mediaInfos: [{
+										type: "column-chart",
+										caption: "将鼠标放置到条柱上查看。单位：所",
+										value: {
+											fields: ["博物馆","图书馆","艺术馆"]
+											}
+										}]
+									}
+								]
+							});
+							feature05.graphic = result.graphic;
+							feature05.graphic.popupTemplate = new PopupTemplate({
+								title: "<b>{地区}每万人医护占比（分城乡）</b>",
+								content: [
+									{
+									type: "media",
+									mediaInfos: [{
+										type: "bar-chart",
+										title: "城市",
+										caption: "将鼠标放置到条柱上查看。单位：所",
+										value: {
+											fields: ["城万医","城万护"]
+											}
+										}]
+									},
+									{
+										type: "media",
+										mediaInfos: [{
+											type: "bar-chart",
+											title: "农村",
+											caption: "将鼠标放置到条柱上查看。单位：所",
+											value: {
+												fields: ["农万医","农万护"]
+												}
+											}]
+									}
+								]
+							});
+							highlight = layerView.highlight(result.graphic);
+						} else {
+							feature01.graphic = defaultgraphic;
+							feature02.graphic = defaultgraphic;
+							feature03.graphic = defaultgraphic;
+							feature04.graphic = defaultgraphic;
+							feature05.graphic = defaultgraphic;
+						}
+					});
+				});
+			});
+
+			mapView.whenLayerView(L2018).then(function (layerView) {
+				var highlight;
+				mapView.on("pointer-down", function (event) {
+					mapView.hitTest(event).then(function (event) {
+						var results = event.results.filter(function (result) {
+							return new PopupTemplate();
+						});
+						var result = results[0];
+						highlight && highlight.remove();
+						if (result) {
+							feature01.graphic = result.graphic;
+							feature01.graphic.popupTemplate = new PopupTemplate({
+								title: "<b>{地区}城乡年可支配收入</b>",
+								content: [{
+									type: "media",
+									mediaInfos: [{
+										type: "pie-chart",
+										caption: "橙色为城市，黄色为农乡。单位：元",
+										value: {
+											fields: ["城可支","农可支"]
+											}
+										}]
+									}
+								]
+							});
+							feature02.graphic = result.graphic;
+							feature02.graphic.popupTemplate = new PopupTemplate({
+								title: "<b>{地区}全年专利授权情况</b>",
+								content: [
+									{
+									type: "fields",
+									fieldInfos: [{
+										fieldName: "专授",
+										label: "专利授权总数："
+										}],
+									},
+									{
+									type: "media",
+									mediaInfos: [{
+										type: "pie-chart",
+										caption: "橙色为发明专利，黄色为实用新型专利，外观设计专利。单位：件",
+										value: {
+											fields: ["发明","实用","外观"]
+											}
+										}]
+									}
+								]
+							});
+							feature03.graphic = result.graphic;
+							feature03.graphic.popupTemplate = new PopupTemplate({
+								title: "<b>{地区}各阶段在校人数情况</b>",
+								content: [
+									{
+									type: "media",
+									mediaInfos: [{
+										type: "column-chart",
+										caption: "将鼠标放置到条柱上查看。单位：万人",
+										value: {
+											fields: ["小学","初中","高中","本科","专科","特殊"]
+											}
+										}]
+									}
+								]
+							});
+							feature04.graphic = result.graphic;
+							feature04.graphic.popupTemplate = new PopupTemplate({
+								title: "<b>{地区}文娱活动厅馆数量</b>",
+								content: [
+									{
+									type: "media",
+									mediaInfos: [{
+										type: "column-chart",
+										caption: "将鼠标放置到条柱上查看。单位：所",
+										value: {
+											fields: ["博物馆","图书馆","艺术馆"]
+											}
+										}]
+									}
+								]
+							});
+							feature05.graphic = result.graphic;
+							feature05.graphic.popupTemplate = new PopupTemplate({
+								title: "<b>{地区}每万人医护占比（分城乡）</b>",
+								content: [
+									{
+									type: "media",
+									mediaInfos: [{
+										type: "bar-chart",
+										title: "城市",
+										caption: "将鼠标放置到条柱上查看。单位：所",
+										value: {
+											fields: ["城万医","城万护"]
+											}
+										}]
+									},
+									{
+										type: "media",
+										mediaInfos: [{
+											type: "bar-chart",
+											title: "农村",
+											caption: "将鼠标放置到条柱上查看。单位：所",
+											value: {
+												fields: ["农万医","农万护"]
+												}
+											}]
+									}
+								]
+							});
+							highlight = layerView.highlight(result.graphic);
+						} else {
+							feature01.graphic = defaultgraphic;
+							feature02.graphic = defaultgraphic;
+							feature03.graphic = defaultgraphic;
+							feature04.graphic = defaultgraphic;
+							feature05.graphic = defaultgraphic;
+						}
+					});
+				});
+			});
+			
+			mapView.whenLayerView(L2019).then(function (layerView) {
+				var highlight;
+				mapView.on("pointer-down", function (event) {
+					mapView.hitTest(event).then(function (event) {
+						var results = event.results.filter(function (result) {
+							return new PopupTemplate();
+						});
+						var result = results[0];
+						highlight && highlight.remove();
+						if (result) {
+							feature01.graphic = result.graphic;
+							feature01.graphic.popupTemplate = new PopupTemplate({
+								title: "<b>{地区}城乡年可支配收入</b>",
+								content: [{
+									type: "media",
+									mediaInfos: [{
+										type: "pie-chart",
+										caption: "橙色为城市，黄色为农乡。单位：元",
+										value: {
+											fields: ["城可支","农可支"]
+											}
+										}]
+									}
+								]
+							});
+							feature02.graphic = result.graphic;
+							feature02.graphic.popupTemplate = new PopupTemplate({
+								title: "<b>{地区}全年专利授权情况</b>",
+								content: [
+									{
+									type: "fields",
+									fieldInfos: [{
+										fieldName: "专授",
+										label: "专利授权总数："
+										}],
+									},
+									{
+									type: "media",
+									mediaInfos: [{
+										type: "pie-chart",
+										caption: "橙色为发明专利，黄色为实用新型专利，外观设计专利。单位：件",
+										value: {
+											fields: ["发明","实用","外观"]
+											}
+										}]
+									}
+								]
+							});
+							feature03.graphic = result.graphic;
+							feature03.graphic.popupTemplate = new PopupTemplate({
+								title: "<b>{地区}各阶段在校人数情况</b>",
+								content: [
+									{
+									type: "media",
+									mediaInfos: [{
+										type: "column-chart",
+										caption: "将鼠标放置到条柱上查看。单位：万人",
+										value: {
+											fields: ["小学","初中","高中","本科","专科","特殊"]
+											}
+										}]
+									}
+								]
+							});
+							feature04.graphic = result.graphic;
+							feature04.graphic.popupTemplate = new PopupTemplate({
+								title: "<b>{地区}文娱活动厅馆数量</b>",
+								content: [
+									{
+									type: "media",
+									mediaInfos: [{
+										type: "column-chart",
+										caption: "将鼠标放置到条柱上查看。单位：所",
+										value: {
+											fields: ["博物馆","图书馆","艺术馆"]
+											}
+										}]
+									}
+								]
+							});
+							feature05.graphic = result.graphic;
+							feature05.graphic.popupTemplate = new PopupTemplate({
+								title: "<b>{地区}每万人医护占比（分城乡）</b>",
+								content: [
+									{
+									type: "media",
+									mediaInfos: [{
+										type: "bar-chart",
+										title: "城市",
+										caption: "将鼠标放置到条柱上查看。单位：所",
+										value: {
+											fields: ["城万医","城万护"]
+											}
+										}]
+									},
+									{
+										type: "media",
+										mediaInfos: [{
+											type: "bar-chart",
+											title: "农村",
+											caption: "将鼠标放置到条柱上查看。单位：所",
+											value: {
+												fields: ["农万医","农万护"]
+												}
+											}]
+									}
+								]
+							});
+							highlight = layerView.highlight(result.graphic);
+						} else {
+							feature01.graphic = defaultgraphic;
+							feature02.graphic = defaultgraphic;
+							feature03.graphic = defaultgraphic;
+							feature04.graphic = defaultgraphic;
+							feature05.graphic = defaultgraphic;
+						}
+					});
+				});
+			});
+			
+			var dot_L2017 = new DotDensityRenderer({
+				outline: {color: [128,128,128], width:0.5},
+				referenceDotValue: 5,  
+				referenceScale: mapView.scale, 
+				attributes: [{
+					field: "人口",
+					label: "年末常驻人口",
+					color: "red"
+				}]
+			});
+			L2017.renderer = dot_L2017;
+
+			var dot_L2018 = new DotDensityRenderer({
+				outline: {color: [128,128,128], width:0.5},
+				referenceDotValue: 5,  
+				referenceScale: mapView.scale, 
+				attributes: [{
+					field: "人口",
+					label: "年末常驻人口",
+					color: "green"
+				}]
+			});
+			L2018.renderer = dot_L2018;
+
+			var dot_L2019 = new DotDensityRenderer({
+				outline: {color: [128,128,128], width:0.5},
+				referenceDotValue: 5,  
+				referenceScale: mapView.scale, 
+				attributes: [{
+					field: "人口",
+					label: "年末常驻人口",
+					color: "blue"
+				}]
+			});
+			L2019.renderer = dot_L2019;
+
+			mapView.when(function(){
+				CalciteMapArcGISSupport.setPopupPanelSync(mapView);
+			});
+
+			var searchWidget = new Search({
+			container: "searchWidgetDiv",
+				view: mapView
+			});
+			CalciteMapArcGISSupport.setSearchExpandEvents(searchWidget);
+
+			var home = new Home({
+				view: mapView
+			});
+			mapView.ui.add(home, "top-left");
+
+			var zoom = new Zoom({
+				view: mapView
+			});
+			mapView.ui.add(zoom, "top-left");
+
+			var compass = new Compass({
+				view: mapView
+			});
+			mapView.ui.add(compass, "top-left");
+
+			var basemapGallery = new Expand({
+				content: new BasemapGallery({
+					view: mapView
+				}),
+				view: mapView
+			});
+			mapView.ui.add(basemapGallery, "top-left");          
+
+			var layerList = new Expand({
+				content: new LayerList({
+					view: mapView,
+					listItemCreatedFunction: function(event) {
+						var item = event.item;
+						if (item.layer.type != "group") {
+							item.panel = {
+								content: "legend",
+								open: false
+							};
+						}
+					}
+				}),
+				view: mapView
+			});
+			mapView.ui.add(layerList, "top-left");
+
+			var scaleBar = new ScaleBar({
+				view: mapView
+			});
+			mapView.ui.add(scaleBar, "bottom-right");
+		});
+	</script>
 </html>
