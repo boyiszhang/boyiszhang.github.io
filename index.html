@@ -175,10 +175,14 @@
 
 			"esri/layers/TileLayer",
 			"esri/layers/FeatureLayer",
+			"esri/layers/GroupLayer",
 
 			"esri/symbols/SimpleFillSymbol",
 
 			"esri/renderers/DotDensityRenderer",
+			"esri/renderers/ClassBreaksRenderer",
+			
+			"esri/smartMapping/renderers/color",
 			
 			"esri/PopupTemplate",
 
@@ -199,29 +203,29 @@
 
 			"dojo/domReady!"
 			], function(Map, Basemap, MapView, Home, Zoom, Compass, Search, Legend, BasemapGallery, Expand, ScaleBar,
-			Attribution, TileLayer, FeatureLayer, SimpleFillSymbol, DotDensityRenderer, PopupTemplate, 
-			Feature, LayerList, QueryTask, Query, Collapse, Dropdown, CalciteMaps, CalciteMapArcGISSupport) {
+			Attribution, TileLayer, FeatureLayer, GroupLayer, SimpleFillSymbol, DotDensityRenderer, ClassBreaksRenderer, 
+			ColorRenderer, PopupTemplate, Feature, LayerList, QueryTask, Query, Collapse, Dropdown, CalciteMaps, 
+			CalciteMapArcGISSupport) {
 
 			var map = new Map({
 				basemap: "streets"
 			});
 
 			var L2017 = new FeatureLayer({
-				url: "https://services9.arcgis.com/SKX4Ho42BPrgC7Qi/arcgis/rest/services/2017/FeatureServer"
+				url: "https://services9.arcgis.com/SKX4Ho42BPrgC7Qi/arcgis/rest/services/2017/FeatureServer",
 			});
 			map.add(L2017);
 
 			var L2018 = new FeatureLayer({
-				url: "https://services9.arcgis.com/SKX4Ho42BPrgC7Qi/arcgis/rest/services/2018/FeatureServer"
+				url: "https://services9.arcgis.com/SKX4Ho42BPrgC7Qi/arcgis/rest/services/2018/FeatureServer",
 			});
 			map.add(L2018);
 
 			var L2019 = new FeatureLayer({
-				url: "https://services9.arcgis.com/SKX4Ho42BPrgC7Qi/arcgis/rest/services/2019/FeatureServer"
+				url: "https://services9.arcgis.com/SKX4Ho42BPrgC7Qi/arcgis/rest/services/2019/FeatureServer",
 			});
 			map.add(L2019);
 
-			// View
 			var mapView = new MapView({
 				container: "mapViewDiv",
 				map: map,
@@ -630,42 +634,351 @@
 					});
 				});
 			});
-			
-			var dot_L2017 = new DotDensityRenderer({
-				outline: {color: [128,128,128], width:0.5},
-				referenceDotValue: 5,  
-				referenceScale: mapView.scale, 
-				attributes: [{
-					field: "人口",
-					label: "年末常驻人口",
-					color: "red"
-				}]
-			});
-			L2017.renderer = dot_L2017;
 
-			var dot_L2018 = new DotDensityRenderer({
-				outline: {color: [128,128,128], width:0.5},
-				referenceDotValue: 5,  
-				referenceScale: mapView.scale, 
-				attributes: [{
-					field: "人口",
-					label: "年末常驻人口",
-					color: "green"
-				}]
-			});
-			L2018.renderer = dot_L2018;
+// #d73027|#f46d43|#fdae61|#fee090|#e0f3f8|#abd9e9|#74add1|#4575b4
+const colors = ["#d73027", "#f46d43", "#fdae61", "#fee090", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4"];
 
-			var dot_L2019 = new DotDensityRenderer({
-				outline: {color: [128,128,128], width:0.5},
-				referenceDotValue: 5,  
-				referenceScale: mapView.scale, 
-				attributes: [{
-					field: "人口",
-					label: "年末常驻人口",
-					color: "blue"
-				}]
+			var L2017_renderer = new ClassBreaksRenderer ({
+				field: "人口",
+				classBreakInfos: [
+					{
+						minValue: 0,
+						maxValue: 1500,
+						symbol: new SimpleFillSymbol({
+							color: "#4575b4",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "< 1500"
+					},
+					{
+						minValue: 1500,
+						maxValue: 3000,
+						symbol: new SimpleFillSymbol({
+							color: "#74add1",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "1500 - 3000"
+					},
+					{
+						minValue: 3000,
+						maxValue: 4500,
+						symbol: new SimpleFillSymbol({
+							color: "#abd9e9",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "3000 - 4500"
+					},
+					{
+						minValue: 4500,
+						maxValue: 6000,
+						symbol: new SimpleFillSymbol({
+							color: "#e0f3f8",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "4500 - 6000"
+					},
+					{
+						minValue: 6000,
+						maxValue: 7500,
+						symbol: new SimpleFillSymbol({
+							color: "#fee090",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "6000 - 7500"
+					},
+					{
+						minValue: 7500,
+						maxValue: 9000,
+						symbol: new SimpleFillSymbol({
+							color: "#fdae61",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "7500 - 9000"
+					},
+					{
+						minValue: 9000,
+						maxValue: 10500,
+						symbol: new SimpleFillSymbol({
+							color: "#f46d43",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "9000 - 10500"
+					},
+					{
+						minValue: 10500,
+						maxValue: 15000,
+						symbol: new SimpleFillSymbol({
+							color: "#d73027",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "> 10500"
+					}
+				],
+				legendOptions: {
+					title: "2017年常驻人口 单位：万人",
+				}
 			});
-			L2019.renderer = dot_L2019;
+			L2017.renderer = L2017_renderer;
+
+			var L2018_renderer = new ClassBreaksRenderer ({
+				field: "人口",
+				classBreakInfos: [
+					{
+						minValue: 0,
+						maxValue: 1500,
+						symbol: new SimpleFillSymbol({
+							color: "#4575b4",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "< 1500"
+					},
+					{
+						minValue: 1500,
+						maxValue: 3000,
+						symbol: new SimpleFillSymbol({
+							color: "#74add1",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "1500 - 3000"
+					},
+					{
+						minValue: 3000,
+						maxValue: 4500,
+						symbol: new SimpleFillSymbol({
+							color: "#abd9e9",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "3000 - 4500"
+					},
+					{
+						minValue: 4500,
+						maxValue: 6000,
+						symbol: new SimpleFillSymbol({
+							color: "#e0f3f8",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "4500 - 6000"
+					},
+					{
+						minValue: 6000,
+						maxValue: 7500,
+						symbol: new SimpleFillSymbol({
+							color: "#fee090",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "6000 - 7500"
+					},
+					{
+						minValue: 7500,
+						maxValue: 9000,
+						symbol: new SimpleFillSymbol({
+							color: "#fdae61",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "7500 - 9000"
+					},
+					{
+						minValue: 9000,
+						maxValue: 10500,
+						symbol: new SimpleFillSymbol({
+							color: "#f46d43",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "9000 - 10500"
+					},
+					{
+						minValue: 10500,
+						maxValue: 15000,
+						symbol: new SimpleFillSymbol({
+							color: "#d73027",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "> 10500"
+					}
+				],
+				legendOptions: {
+					title: "2018年常驻人口 单位：万人",
+				}
+			});
+			L2018.renderer = L2018_renderer;
+
+			var L2019_renderer = new ClassBreaksRenderer ({
+				field: "人口",
+				classBreakInfos: [
+					{
+						minValue: 0,
+						maxValue: 1500,
+						symbol: new SimpleFillSymbol({
+							color: "#4575b4",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "< 1500"
+					},
+					{
+						minValue: 1500,
+						maxValue: 3000,
+						symbol: new SimpleFillSymbol({
+							color: "#74add1",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "1500 - 3000"
+					},
+					{
+						minValue: 3000,
+						maxValue: 4500,
+						symbol: new SimpleFillSymbol({
+							color: "#abd9e9",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "3000 - 4500"
+					},
+					{
+						minValue: 4500,
+						maxValue: 6000,
+						symbol: new SimpleFillSymbol({
+							color: "#e0f3f8",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "4500 - 6000"
+					},
+					{
+						minValue: 6000,
+						maxValue: 7500,
+						symbol: new SimpleFillSymbol({
+							color: "#fee090",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "6000 - 7500"
+					},
+					{
+						minValue: 7500,
+						maxValue: 9000,
+						symbol: new SimpleFillSymbol({
+							color: "#fdae61",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "7500 - 9000"
+					},
+					{
+						minValue: 9000,
+						maxValue: 10500,
+						symbol: new SimpleFillSymbol({
+							color: "#f46d43",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "9000 - 10500"
+					},
+					{
+						minValue: 10500,
+						maxValue: 15000,
+						symbol: new SimpleFillSymbol({
+							color: "#d73027",
+							style: "solid",
+							outline: {
+							width: 0.2,
+							color: [255, 255, 255, 0.5],
+							}
+						}),
+						label: "> 10500"
+					}
+				],
+				legendOptions: {
+					title: "2019年常驻人口 单位：万人",
+				}
+			});
+			L2019.renderer = L2019_renderer;
 
 			mapView.when(function(){
 				CalciteMapArcGISSupport.setPopupPanelSync(mapView);
