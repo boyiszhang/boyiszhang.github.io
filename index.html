@@ -213,16 +213,24 @@
 
 			var L2017 = new FeatureLayer({
 				url: "https://services9.arcgis.com/SKX4Ho42BPrgC7Qi/arcgis/rest/services/2017/FeatureServer",
+				blendMode: "multiply",
+				opacity:1
 			});
 			map.add(L2017);
 
 			var L2018 = new FeatureLayer({
 				url: "https://services9.arcgis.com/SKX4Ho42BPrgC7Qi/arcgis/rest/services/2018/FeatureServer",
+				blendMode: "multiply",
+				opacity:1,
+				visible: false
 			});
 			map.add(L2018);
 
 			var L2019 = new FeatureLayer({
 				url: "https://services9.arcgis.com/SKX4Ho42BPrgC7Qi/arcgis/rest/services/2019/FeatureServer",
+				blendMode: "multiply",
+				opacity:1,
+				visible: false
 			});
 			map.add(L2019);
 
